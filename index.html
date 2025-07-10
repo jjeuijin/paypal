@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>입금/출금 페이지</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0d2f23;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .header {
+      width: 100%;
+      background-color: #112b22;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .header .logo img {
+      height: 32px;
+    }
+
+    .header .right-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-right: 20px;
+    }
+
+    .header select {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: white;
+      color: black;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      background-color: #112b22;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      margin-top: 16px;
+      margin-bottom: 60px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: left;
+      gap: 20px;
+      margin-bottom: 16px;
+    }
+
+    .tabs .tab {
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 7px;
+      background: transparent;
+      color: white;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    .tabs .tab.active {
+      background-color: #0d2f23;
+      border: none;
+    }
+
+    .wallet-connect,
+    .request-button {
+      display: block;
+      width: calc(100% - 32px);
+      margin: 0 auto;
+      text-align: center;
+      background-color: #007bff;
+      color: white;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .wallet-connect:hover,
+    .request-button:hover {
+      background-color: #0056b3;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #40785d;
+    }
+
+    .escrow-options,
+    .crypto-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      row-gap: 16px;
+      justify-content: space-between;
+    }
+
+    .escrow-btn,
+    .crypto-btn {
+      flex: 0 1 calc(33.33% - 12px);
+      max-width: calc(33.33% - 12px);
+      box-sizing: border-box;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #0d2f23;
+      color: #40785d;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .escrow-btn.active,
+    .crypto-btn.active {
+      background-color: #007bff;
+      color: #fff;
+      border-color: #007bff;
+    }
+
+    .escrow-btn:hover,
+    .crypto-btn:hover {
+      background-color: #e7e7e7;
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button i {
+      font-size: 13px;
+    }
+
+    button span {
+      font-size: 12px;
+    }
+
+    .footer {
+      width: 100%;
+      background-color: #112b22;
+      text-align: center;
+      padding: 12px 0;
+      font-size: 14px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+    }
+
+    .tab-content {
+      display: none;
+    }
+    .qr-section {
+      text-align: center;
+      margin-top: 20px;
+      color: #40785d;
+    }
+
+    .qr-frame {
+      width: 210px;
+      height: 210px;
+      background-color: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      margin-left: 10px;
+      margin-right: 10px;
+      visibility: hidden;
+      color: #40785d;
+    }
+
+    .qr-frame.center {
+      visibility: visible;
+      border: 2px dashed white;
+      color: #40785d;
+    }
+
+    .qr-frame img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .qr-frame-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      color: #40785d;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+    .btc-address {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      background: transparent;
+      border: 2px dashed #1f3239;
+      border-radius: 5px;
+      margin-bottom: 8px;
+      height: 28px;
+    }
+
+    .btc-address span {
+      overflow-wrap: anywhere;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 20px;
+    }
+
+    .button-container {
+      margin-bottom: 16px;
+      padding: 16px;
+      background-color: #0d2f23;
+      border-radius: 7px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .btc-address button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .escrow-btn.active i {
+      visibility: hidden;
+    }
+
+    .escrow-btn.active i.fa-cc-amazon-pay {
+      visibility: visible;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+</head>
+
+<body>
+<div class="header">
+  <div class="logo">
+    <img src="img/logo.svg" alt="Logo" />
+  </div>
+  <div class="right-section">
+    <select>
+      <option>₮ 0.00000</option>
+    </select>
+    <div class="profile">
+      <img src="profile-placeholder.png" alt="Profile" />
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('deposit')">
+      <i class="fas fa-wallet"></i>
+      <span>입금</span>
+    </div>
+    <div class="tab" onclick="switchTab('withdraw')">
+      <i class="fas fa-hand-holding-usd"></i>
+      <span>출금</span>
+    </div>
+  </div>
+
+  <div id="deposit" class="tab-content active">
+    <div class="wallet-connect">WalletConnect</div>
+
+    <div class="input-group">
+      <label for="escrow-select"> <i class="fas fa-comment-dollar"></i> 입금수단 선택 </label>
+
+      <div class="button-container">
+        <div class="escrow-options">
+          <button class="escrow-btn active" id="paypal-btn">
+            <i class="fa-brands fa-cc-paypal"></i>
+            <span>PayPal</span>
+          </button>
+          <button class="escrow-btn" id="stripe-btn">
+            <i class="fab fa-cc-stripe"></i>
+            <span>Stripe</span>
+          </button>
+          <button class="escrow-btn" id="alipay-btn">
+            <i class="fab fa-alipay"></i>
+            <span>Alipay</span>
+          </button>
+          <button class="escrow-btn" id="google-pay-btn">
+            <i class="fa-brands fa-google-pay"></i>
+            <span>Google Pay</span>
+          </button>
+          <button class="escrow-btn" id="amazon-pay-btn">
+            <i class="fa-brands fa-cc-amazon-pay"></i>
+            <span>Amazon Pay</span>
+          </button>
+          <button class="escrow-btn" id="apple-pay-btn">
+            <i class="fa-brands fa-cc-apple-pay"></i>
+            <span>Apple Pay</span>
+          </button>
+        </div>
+      </div>
+      <div class="button-container">
+        <div class="crypto-options">
+          <button class="crypto-btn" id="btc-btn">
+            <i class="fab fa-bitcoin"></i>
+            <span>BTC</span>
+          </button>
+          <button class="crypto-btn" id="eth-btn">
+            <i class="fab fa-ethereum"></i>
+            <span>ETH</span>
+          </button>
+          <button class="crypto-btn" id="ltc-btn">
+            <i class="fab fa-litecoin"></i>
+            <span>LTC</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="qr-section">
+      <div class="qr-frame-container">
+        <div class="qr-frame center">
+          <img id="qr-code" src="" alt="QR Code" />
+        </div>
+      </div>
+      <div class="btc-address">
+        <span>1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span>
+        <button id="copy-btc-address" onclick="copyAddress()">복사</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="withdraw" class="tab-content">
+    <div class="request-button">출금요청</div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>&copy; 2025 Deposit/Withdraw Platform. All rights reserved.</p>
+</div>
+
+<script>
+  let activeTab = "deposit";
+
+  function switchTab(tab) {
+    if (activeTab === tab) return;
+    document.getElementById(activeTab).classList.remove("active");
+    activeTab = tab;
+    document.getElementById(activeTab).classList.add("active");
+  }
+
+  function copyAddress() {
+    const btcAddress = document.querySelector(".btc-address span").innerText;
+    navigator.clipboard.writeText(btcAddress)
+            .then(() => {
+              alert("주소가 복사되었습니다!");
+            })
+            .catch((error) => {
+              alert("주소 복사에 실패했습니다.");
+            });
+  }
+  // ✅ QR 코드 클릭 시 PayPal 결제창으로 이동
+  document.addEventListener("DOMContentLoaded", function() {
+    const qrCode = document.getElementById("qr-code");
+    qrCode.src = "your-qr-image.png";  // QR 이미지 경로 (기존 그대로 사용)
+    qrCode.style.cursor = "pointer";
+
+    qrCode.onclick = function() {
+      window.location.href = "https://paypal.me/JinLim720 ";
+    };
+  });
+</script>
+<script>
+  // SDK 준비 완료 시
+  window.addEventListener("DOMContentLoaded", function() {
+    const tg = window.Telegram.WebApp;
+
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      const user = tg.initDataUnsafe.user;
+      const profileImg = document.getElementById("profile-img");
+
+      if (user.photo_url) {
+        profileImg.src = user.photo_url;
+      }
+      // 필요하면 이름도 표시 가능
+      console.log("User:", user.first_name, user.last_name, user.username);
+    } else {
+      console.log("텔레그램 웹앱 유저 정보 없음");
+    }
+  });
+</script>
+
+</body>
+</html>
