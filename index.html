@@ -28,6 +28,7 @@
 
     .header .logo img {
       height: 32px;
+      padding-left:10px;
     }
 
     .header .right-section {
@@ -259,14 +260,7 @@
       cursor: pointer;
     }
 
-    .escrow-btn.active i {
-      visibility: hidden;
-    }
 
-    .escrow-btn.active i.fa-cc-amazon-pay {
-      visibility: visible;
-      animation: fadeIn 0.5s ease-in-out;
-    }
 
     @keyframes fadeIn {
       0% { opacity: 0; }
@@ -281,7 +275,7 @@
 <body>
 <div class="header">
   <div class="logo">
-    <img src="img/logo.svg" alt="Logo" />
+    <img src="img/ping(logo).png" alt="Logo" />
   </div>
   <div class="right-section">
     <select>
@@ -314,9 +308,10 @@
       <div class="button-container">
         <div class="escrow-options">
           <button class="escrow-btn active" id="paypal-btn">
-            <i class="fa-brands fa-cc-paypal"></i>
+            <i class="fab fa-cc-paypal"></i>
             <span>PayPal</span>
           </button>
+
           <button class="escrow-btn" id="stripe-btn">
             <i class="fab fa-cc-stripe"></i>
             <span>Stripe</span>
@@ -364,7 +359,7 @@
       </div>
       <div class="btc-address">
         <span>1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span>
-        <button id="copy-btc-address" onclick="copyAddress()">복사</button>
+        <button id="copy-btc-address" onclick="copyAddress()">Copy</button>
       </div>
     </div>
   </div>
@@ -379,6 +374,7 @@
 </div>
 
 <script>
+  // 기존
   let activeTab = "deposit";
 
   function switchTab(tab) {
@@ -398,17 +394,56 @@
               alert("주소 복사에 실패했습니다.");
             });
   }
-  // ✅ QR 코드 클릭 시 PayPal 결제창으로 이동
-  document.addEventListener("DOMContentLoaded", function() {
-    const qrCode = document.getElementById("qr-code");
-    qrCode.src = "your-qr-image.png";  // QR 이미지 경로 (기존 그대로 사용)
-    qrCode.style.cursor = "pointer";
 
-    qrCode.onclick = function() {
-      window.location.href = "https://paypal.me/JinLim720 ";
-    };
+  // ✅ Escrow 버튼 동작
+  document.querySelectorAll(".escrow-btn").forEach(btn => {
+    btn.addEventListener("click", function() {
+      document.querySelectorAll(".escrow-btn").forEach(b => b.classList.remove("active"));
+      this.classList.add("active");
+
+      // QR코드 이미지 변경 예시
+      const qrCode = document.getElementById("qr-code");
+      if(this.id === "paypal-btn"){
+        qrCode.src = "paypal-qr.png";
+      } else if(this.id === "stripe-btn"){
+        qrCode.src = "stripe-qr.png";
+      } else if(this.id === "alipay-btn"){
+        qrCode.src = "alipay-qr.png";
+      } else if(this.id === "google-pay-btn"){
+        qrCode.src = "gpay-qr.png";
+      } else if(this.id === "amazon-pay-btn"){
+        qrCode.src = "amazon-qr.png";
+      } else if(this.id === "apple-pay-btn"){
+        qrCode.src = "applepay-qr.png";
+      }
+
+      // 주소도 필요하다면 이곳에서 변경
+      document.querySelector(".btc-address span").innerText = "1A1zP1..." + this.id;
+    });
+  });
+
+  // ✅ Crypto 버튼 동작
+  document.querySelectorAll(".crypto-btn").forEach(btn => {
+    btn.addEventListener("click", function() {
+      document.querySelectorAll(".crypto-btn").forEach(b => b.classList.remove("active"));
+      this.classList.add("active");
+
+      // QR코드 이미지 변경 예시
+      const qrCode = document.getElementById("qr-code");
+      if(this.id === "btc-btn"){
+        qrCode.src = "btc-qr.png";
+      } else if(this.id === "eth-btn"){
+        qrCode.src = "eth-qr.png";
+      } else if(this.id === "ltc-btn"){
+        qrCode.src = "ltc-qr.png";
+      }
+
+      // 주소 변경
+      document.querySelector(".btc-address span").innerText = "crypto-address-for-" + this.id;
+    });
   });
 </script>
+
 <script>
   // SDK 준비 완료 시
   window.addEventListener("DOMContentLoaded", function() {
